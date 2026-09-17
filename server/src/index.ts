@@ -35,5 +35,4 @@ if (process.env.NODE_ENV !== "production") {
   });
 }
 
-// Required for Vercel
 export default app;
