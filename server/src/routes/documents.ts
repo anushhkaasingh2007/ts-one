@@ -1,4 +1,4 @@
-import { Router, type Response } from "express";
+import { Router, type Request, type Response } from "express";
 import { z } from "zod";
 import { prisma } from "../lib/prisma.js";
 import { requireAuth, type AuthedRequest } from "../middleware/auth.js";
@@ -42,7 +42,7 @@ const createSchema = z.object({
 });
 
 router.post("/", async (req: AuthedRequest, res: Response) => {
-  const parsed = createSchema.safeParse(req.body);
+  const parsed = createSchema.safeParse((req as Request).body);
 
   if (!parsed.success) {
     return res.status(400).json({
@@ -62,7 +62,7 @@ router.post("/", async (req: AuthedRequest, res: Response) => {
 });
 
 router.post("/:id/verify", async (req: AuthedRequest, res: Response) => {
-  const documentId = String(req.params.id);
+  const documentId = String((req as Request).params.id);
 
   const document = await prisma.document.findFirst({
     where: {

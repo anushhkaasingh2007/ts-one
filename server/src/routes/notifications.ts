@@ -1,4 +1,4 @@
-import { Router, type Response } from "express";
+import { Router, type Request, type Response } from "express";
 import { prisma } from "../lib/prisma.js";
 import { requireAuth, type AuthedRequest } from "../middleware/auth.js";
 
@@ -16,7 +16,7 @@ router.get("/", async (req: AuthedRequest, res: Response) => {
 });
 
 router.patch("/:id/read", async (req: AuthedRequest, res: Response) => {
-  const notificationId = String(req.params.id);
+  const notificationId = String((req as Request).params.id);
 
   const notification = await prisma.notification.findFirst({
     where: {

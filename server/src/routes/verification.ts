@@ -1,4 +1,4 @@
-import { Router } from "express";
+import { Router, type Request, type Response } from "express";
 import { z } from "zod";
 import { prisma } from "../lib/prisma.js";
 import { requireAuth, type AuthedRequest } from "../middleware/auth.js";
@@ -18,7 +18,7 @@ const SOURCES = [
   "DISABILITY_CERT",
 ] as const;
 
-router.get("/", async (req: AuthedRequest, res) => {
+router.get("/", async (req: AuthedRequest, res: Response) => {
   const logs = await prisma.verificationLog.findMany({
     where: { studentId: req.studentId },
     orderBy: { checkedAt: "desc" },
@@ -28,8 +28,8 @@ router.get("/", async (req: AuthedRequest, res) => {
 
 const runSchema = z.object({ source: z.enum(SOURCES) });
 
-router.post("/:source/run", async (req: AuthedRequest, res) => {
-  const parsed = runSchema.safeParse({ source: req.params.source });
+router.post("/:source/run", async (req: AuthedRequest, res: Response) => {
+  const parsed = runSchema.safeParse({ source: (req as Request).params.source });
   if (!parsed.success) return res.status(400).json({ error: "Unknown verification source" });
 
   const roll = Math.random();
