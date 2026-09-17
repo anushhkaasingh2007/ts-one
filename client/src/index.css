@@ -1,0 +1,97 @@
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Manrope:wght@600;700;800&family=Noto+Sans:wght@400;500;600;700&family=Noto+Sans+Devanagari:wght@400;500;600;700&display=swap");
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --background: 0 0% 100%;
+  --foreground: 222 47% 11%;
+  --card: 0 0% 100%;
+  --card-foreground: 222 47% 11%;
+  --muted: 210 33% 96%;
+  --muted-foreground: 215 16% 40%;
+  --border: 214 20% 88%;
+  --primary: 214 82% 30%;
+  --primary-foreground: 0 0% 100%;
+  --accent: 210 40% 94%;
+  --accent-foreground: 214 82% 30%;
+}
+
+.dark {
+  --background: 222 47% 7%;
+  --foreground: 210 20% 96%;
+  --card: 222 40% 10%;
+  --card-foreground: 210 20% 96%;
+  --muted: 222 30% 15%;
+  --muted-foreground: 215 16% 65%;
+  --border: 222 25% 20%;
+  --primary: 213 70% 60%;
+  --primary-foreground: 222 47% 11%;
+  --accent: 222 30% 16%;
+  --accent-foreground: 213 70% 70%;
+}
+
+* {
+  border-color: hsl(var(--border));
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  background-color: hsl(var(--background));
+  color: hsl(var(--foreground));
+  font-family: "Inter", "Noto Sans", system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+h1, h2, h3 {
+  font-family: "Manrope", "Inter", system-ui, sans-serif;
+  letter-spacing: -0.01em;
+}
+
+::selection {
+  background: rgba(11, 61, 145, 0.18);
+}
+
+.skip-link {
+  position: absolute;
+  left: -9999px;
+  top: 0;
+  z-index: 100;
+  background: #0b3d91;
+  color: #fff;
+  padding: 0.75rem 1.25rem;
+  border-radius: 0 0 8px 0;
+  font-weight: 600;
+}
+.skip-link:focus {
+  left: 0;
+}
+
+:focus-visible {
+  outline: 3px solid #ff9933;
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+@media print {
+  header, nav, .no-print, #jago-fab { display: none !important; }
+}
+
+.tricolor-bar {
+  height: 4px;
+  background: linear-gradient(90deg, #ff9933 0%, #ff9933 33%, #ffffff 33%, #ffffff 66%, #138808 66%, #138808 100%);
+}
+
+.gov-scrollbar::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+.gov-scrollbar::-webkit-scrollbar-thumb {
+  background: hsl(var(--border));
+  border-radius: 8px;
+}

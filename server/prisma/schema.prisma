@@ -1,0 +1,171 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum SchemeKey {
+  PRE_MATRIC
+  POST_MATRIC
+  TOP_CLASS
+  NFST
+  NOS
+}
+
+enum ApplicationStage {
+  SUBMITTED
+  VERIFIED
+  APPROVED
+  SANCTIONED
+  DISBURSED
+  REJECTED
+}
+
+enum DocumentType {
+  AADHAAR
+  CASTE_CERTIFICATE
+  INCOME_CERTIFICATE
+  MARKSHEET
+  BONAFIDE_CERTIFICATE
+  BANK_PASSBOOK
+  DISABILITY_CERTIFICATE
+  ADMIT_CARD
+}
+
+enum DocumentStatus {
+  PENDING
+  VERIFIED
+  REJECTED
+}
+
+enum VerificationSource {
+  DIGILOCKER
+  UIDAI
+  APAAR
+  UDISE
+  AISHE
+  UGC_NTA
+  E_DISTRICT
+  INCOME_CERT
+  DISABILITY_CERT
+}
+
+enum VerificationStatus {
+  PENDING
+  VERIFIED
+  FAILED
+  MANUAL_REVIEW
+}
+
+enum NotificationCategory {
+  VERIFICATION
+  APPLICATION
+  SANCTION
+  DBT
+  GENERAL
+}
+
+enum ChatSender {
+  USER
+  BOT
+}
+
+model Student {
+  id                String   @id @default(cuid())
+  name              String
+  email             String   @unique
+  passwordHash      String
+  phone             String
+  state             String
+  district          String
+  community         String
+  aadhaarLast4      String
+  aadhaarVerified   Boolean  @default(false)
+  digilockerLinked  Boolean  @default(false)
+  createdAt         DateTime @default(now())
+
+  applications      Application[]
+  documents         Document[]
+  verifications     VerificationLog[]
+  notifications     Notification[]
+  chatMessages      ChatMessage[]
+}
+
+model Scheme {
+  id                  String    @id @default(cuid())
+  key                 SchemeKey @unique
+  name                String
+  shortDescription    String
+  eligibilitySummary  String
+  icon                String
+  applications        Application[]
+}
+
+model Application {
+  id                String            @id @default(cuid())
+  studentId         String
+  scheme            Scheme            @relation(fields: [schemeId], references: [id])
+  schemeId          String
+  academicYear      String
+  stage             ApplicationStage  @default(SUBMITTED)
+  amountRequested   Int
+  amountSanctioned  Int?
+  submittedAt       DateTime          @default(now())
+  updatedAt         DateTime          @updatedAt
+
+  student           Student           @relation(fields: [studentId], references: [id])
+  statusEvents      StatusEvent[]
+}
+
+model StatusEvent {
+  id            String           @id @default(cuid())
+  applicationId String
+  application   Application      @relation(fields: [applicationId], references: [id])
+  stage         ApplicationStage
+  occurredAt    DateTime         @default(now())
+  remarks       String?
+}
+
+model Document {
+  id             String         @id @default(cuid())
+  studentId      String
+  student        Student        @relation(fields: [studentId], references: [id])
+  type           DocumentType
+  fileName       String
+  status         DocumentStatus @default(PENDING)
+  verifiedSource String?
+  uploadedAt     DateTime       @default(now())
+}
+
+model VerificationLog {
+  id         String              @id @default(cuid())
+  studentId  String
+  student    Student             @relation(fields: [studentId], references: [id])
+  source     VerificationSource
+  status     VerificationStatus  @default(PENDING)
+  checkedAt  DateTime            @default(now())
+  remarks    String?
+}
+
+model Notification {
+  id         String               @id @default(cuid())
+  studentId  String
+  student    Student              @relation(fields: [studentId], references: [id])
+  title      String
+  message    String
+  category   NotificationCategory
+  read       Boolean              @default(false)
+  createdAt  DateTime             @default(now())
+}
+
+model ChatMessage {
+  id         String     @id @default(cuid())
+  studentId  String
+  student    Student    @relation(fields: [studentId], references: [id])
+  sender     ChatSender
+  message    String
+  createdAt  DateTime   @default(now())
+}
