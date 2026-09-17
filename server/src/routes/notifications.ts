@@ -9,20 +9,17 @@ router.use(requireAuth);
 router.get("/", async (req: AuthedRequest, res: Response) => {
   const notifications = await prisma.notification.findMany({
     where: { studentId: req.studentId },
-    orderBy: { createdAt: "desc" },
+    orderBy: { createdAt: "desc" }
   });
 
   res.json(notifications);
 });
 
 router.patch("/:id/read", async (req: AuthedRequest, res: Response) => {
-  const notificationId = String((req as Request).params.id);
+  const id = String((req as Request).params.id);
 
   const notification = await prisma.notification.findFirst({
-    where: {
-      id: notificationId,
-      studentId: req.studentId,
-    },
+    where: { id, studentId: req.studentId }
   });
 
   if (!notification) {
@@ -30,8 +27,8 @@ router.patch("/:id/read", async (req: AuthedRequest, res: Response) => {
   }
 
   const updated = await prisma.notification.update({
-    where: { id: notification.id },
-    data: { read: true },
+    where: { id },
+    data: { read: true }
   });
 
   res.json(updated);
