@@ -26,7 +26,14 @@ app.use("/api/chatbot", chatbotRoutes);
 
 app.use((_req, res) => res.status(404).json({ error: "Not found" }));
 
-const port = Number(process.env.API_PORT) || 4000;
-app.listen(port, () => {
-  console.log(`TS-One API listening on http://localhost:${port}`);
-});
+// Local development only
+if (process.env.NODE_ENV !== "production") {
+  const port = Number(process.env.API_PORT) || 4000;
+
+  app.listen(port, () => {
+    console.log(`TS-One API listening on http://localhost:${port}`);
+  });
+}
+
+// Required for Vercel
+export default app;
