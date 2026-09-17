@@ -1,5 +1,5 @@
 import "dotenv/config";
-import express from "express";
+import express, { type Request, type Response } from "express";
 import cors from "cors";
 import authRoutes from "./routes/auth.js";
 import schemeRoutes from "./routes/schemes.js";
@@ -14,7 +14,9 @@ const app = express();
 app.use(cors({ origin: process.env.CLIENT_ORIGIN || "http://localhost:5173" }));
 app.use(express.json());
 
-app.get("/api/health", (_req, res) => res.json({ status: "ok" }));
+app.get("/api/health", (_req: Request, res: Response) => {
+  res.json({ status: "ok" });
+});
 
 app.use("/api/auth", authRoutes);
 app.use("/api/schemes", schemeRoutes);
@@ -24,7 +26,9 @@ app.use("/api/verification", verificationRoutes);
 app.use("/api/notifications", notificationRoutes);
 app.use("/api/chatbot", chatbotRoutes);
 
-app.use((_req, res) => res.status(404).json({ error: "Not found" }));
+app.use((_req: Request, res: Response) => {
+  res.status(404).json({ error: "Not found" });
+});
 
 // Local development only
 if (process.env.NODE_ENV !== "production") {
