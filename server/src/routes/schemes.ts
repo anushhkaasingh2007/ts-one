@@ -1,4 +1,5 @@
 // @ts-nocheck
+// @ts-nocheck
 import { Router, type Request, type Response } from "express";
 import { prisma } from "../lib/prisma.js";
 
