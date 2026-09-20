@@ -43,7 +43,31 @@ Password: TSOne@2025
 
 ```
 ts-one/
-  client/   React + Vite frontend
-  server/   Express + Prisma API (PostgreSQL)
+  client/       React + Vite frontend
+  server/       Express + Prisma API (PostgreSQL)
+  vercel.json   Single-deployment config (serves client + /api together)
 ```
+
+## Deploy to Vercel
+
+The client and API ship as **one** Vercel project. The root `vercel.json` serves the
+built client statically and routes `/api/*` to the Express app as a serverless function,
+so the frontend calls the API same-origin (no `VITE_API_URL`, no CORS setup).
+
+1. **Database** — create a Postgres database (e.g. [Neon](https://neon.tech), free tier)
+   and copy its **pooled** connection string.
+2. **Vercel project settings** — set the project's **Root Directory** to the repository
+   root (not `client/`). The root `vercel.json` handles the build.
+3. **Environment variables** (Vercel → Settings → Environment Variables):
+   - `DATABASE_URL` — the Neon connection string
+   - `JWT_SECRET` — a long random string
+   - `NODE_ENV` — `production`
+4. **Initialize the database** once, from your machine, pointing at the Neon DB:
+   ```bash
+   cd server
+   DATABASE_URL="<neon-url>" npm run prisma:migrate
+   DATABASE_URL="<neon-url>" npm run seed
+   ```
+5. **Deploy.** Login then works at `https://<your-app>.vercel.app/login` with the demo
+   credentials above.
 # ts-one
